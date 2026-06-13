@@ -1,0 +1,879 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国铁路系统 - 各段及车站介绍</title>
+    <style>
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2c5f8a;
+            --accent: #d4a843;
+            --accent-light: #f0d78c;
+            --bg: #f4f4f6;
+            --card-bg: #ffffff;
+            --text: #2c2c2c;
+            --text-light: #5a5a5a;
+            --border: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.14);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(160deg, #e8ecf1 0%, #f4f4f6 30%, #eef1f5 100%);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ========== 顶部导航栏 ========== */
+        .top-bar {
+            background: var(--primary);
+            color: #fff;
+            padding: 6px 0;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-bar a {
+            color: #c8ddf0;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .top-bar a:hover {
+            color: #fff;
+        }
+        .top-bar .tagline {
+            opacity: 0.85;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ========== 头部 ========== */
+        .header {
+            background: linear-gradient(135deg, #0f2b45 0%, #1a3a5c 40%, #1e4a72 100%);
+            color: #fff;
+            padding: 40px 0 36px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -80px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -60px;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(212, 168, 67, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .header .logo-icon {
+            display: inline-block;
+            width: 64px;
+            height: 64px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 6px 24px rgba(212, 168, 67, 0.35);
+            line-height: 64px;
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 6px;
+        }
+        .header .subtitle {
+            font-size: 1.05rem;
+            opacity: 0.8;
+            font-weight: 300;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========== 导航标签 ========== */
+        .nav-tabs-wrapper {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 8px 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .nav-tab {
+            padding: 11px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            white-space: nowrap;
+            color: var(--text-light);
+            position: relative;
+            user-select: none;
+            letter-spacing: 0.5px;
+            border: 2px solid transparent;
+            background: transparent;
+        }
+        .nav-tab:hover {
+            background: #f0f4f8;
+            color: var(--primary);
+            border-color: #e0e8f0;
+        }
+        .nav-tab.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 16px rgba(26, 58, 92, 0.3);
+            transform: translateY(-2px);
+        }
+        .nav-tab .emoji-dot {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-content {
+            padding: 32px 0 60px;
+        }
+        .content-grid {
+            display: none;
+            animation: fadeSlideIn 0.45s ease forwards;
+        }
+        .content-grid.active {
+            display: block;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 卡片布局 */
+        .cards-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 28px 26px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-4px);
+            border-color: #dce5ed;
+        }
+        .card .card-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            font-size: 26px;
+            margin-bottom: 14px;
+            background: #f0f6fc;
+        }
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+        .card .card-badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: #5c3d1a;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        .card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+        }
+        .card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+        .card ul li {
+            padding: 4px 0 4px 20px;
+            position: relative;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .card ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 0.7rem;
+            top: 6px;
+        }
+        .card .highlight-box {
+            background: #f9fafb;
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 0.88rem;
+            color: #444;
+            border-left: 3px solid var(--accent);
+        }
+
+        /* 全宽信息卡 */
+        .info-banner {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border-left: 5px solid var(--primary-light);
+            transition: var(--transition);
+        }
+        .info-banner:hover {
+            box-shadow: var(--shadow-hover);
+        }
+        .info-banner h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .info-banner p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            max-width: 900px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent);
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+
+        /* ========== 页脚 ========== */
+        .footer {
+            background: var(--primary);
+            color: #bcccd9;
+            text-align: center;
+            padding: 22px 0;
+            font-size: 0.88rem;
+            letter-spacing: 0.5px;
+        }
+        .footer span {
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.7rem;
+                letter-spacing: 1px;
+            }
+            .header {
+                padding: 28px 0 24px;
+            }
+            .nav-tab {
+                padding: 9px 16px;
+                font-size: 0.85rem;
+            }
+            .cards-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .card {
+                padding: 20px 18px;
+            }
+            .info-banner {
+                padding: 20px 18px;
+            }
+        }
+        @media (max-width: 400px) {
+            .nav-tab {
+                padding: 7px 12px;
+                font-size: 0.78rem;
+            }
+            .nav-tab .emoji-dot {
+                margin-right: 3px;
+                font-size: 0.9rem;
+            }
+            .header h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部小条 -->
+    <div class="top-bar">
+        <div class="container">
+            <span>🚂 中国铁路系统知识平台</span>
+            <span class="tagline">传承铁路文化 · 了解铁路架构</span>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <header class="header">
+        <div class="logo-icon">路</div>
+        <h1>中国铁路系统</h1>
+        <p class="subtitle">车辆段 · 机务段 · 工务段 · 电务段 · 车间段 · 大机段 · 铁路车站</p>
+    </header>
+
+    <!-- 导航标签 -->
+    <div class="nav-tabs-wrapper">
+        <div class="container">
+            <nav class="nav-tabs" id="navTabs">
+                <button class="nav-tab active" data-target="panel-cheliang">
+                    <span class="emoji-dot">🚃</span>车辆段
+                </button>
+                <button class="nav-tab" data-target="panel-jiwu">
+                    <span class="emoji-dot">🚂</span>机务段
+                </button>
+                <button class="nav-tab" data-target="panel-gongwu">
+                    <span class="emoji-dot">🛤️</span>工务段
+                </button>
+                <button class="nav-tab" data-target="panel-dianwu">
+                    <span class="emoji-dot">⚡</span>电务段
+                </button>
+                <button class="nav-tab" data-target="panel-chejian">
+                    <span class="emoji-dot">🔧</span>车间段
+                </button>
+                <button class="nav-tab" data-target="panel-daji">
+                    <span class="emoji-dot">🏗️</span>大机段
+                </button>
+                <button class="nav-tab" data-target="panel-chezhan">
+                    <span class="emoji-dot">🏫</span>铁路车站
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 主内容 -->
+    <main class="main-content container" id="mainContent">
+
+        <!-- ==================== 车辆段 ==================== -->
+        <section class="content-grid active" id="panel-cheliang">
+            <h2 class="section-title">🚃 车辆段</h2>
+            <div class="info-banner">
+                <h3>📌 概述</h3>
+                <p>车辆段是铁路系统中负责<strong>客车、货车车辆</strong>的日常检修、保养、整备和运用管理的基层单位。它确保每一列上线运行的车辆都处于良好技术状态，是保障旅客舒适度和货运安全的关键环节。</p>
+            </div>
+            <div class="cards-row">
+                <div class="card">
+                    <div class="card-icon">🔍</div>
+                    <span class="card-badge">核心职能</span>
+                    <h3>车辆检修与维护</h3>
+                    <ul>
+                        <li>客车日常检修（A1-A4修程）</li>
+                        <li>货车段修、辅修及临修</li>
+                        <li>轮对镟修与轴承检测</li>
+                        <li>制动系统专项检查</li>
+                        <li>空调及电气设备维护</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛡️</div>
+                    <span class="card-badge">安全职责</span>
+                    <h3>安全质量把控</h3>
+                    <ul>
+                        <li>车辆出库质量验收</li>
+                        <li>轴温报警装置检测</li>
+                        <li>防滑器功能测试</li>
+                        <li>车钩缓冲装置检查</li>
+                        <li>绝缘及接地保护测试</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📍</div>
+                    <span class="card-badge">典型分布</span>
+                    <h3>主要车辆段举例</h3>
+                    <ul>
+                        <li>北京车辆段（京局）</li>
+                        <li>上海南车辆段（上局）</li>
+                        <li>广州车辆段（广铁）</li>
+                        <li>成都车辆段（成局）</li>
+                        <li>武汉北车辆段（武局）</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card highlight-box" style="margin-top:8px;">
+                <strong>💡 你知道吗？</strong> 一列CR200J动力集中动车组的车辆部分同样由车辆段负责检修，而动力车部分则由机务段负责，体现了"动集"跨专业协作的特点。
+            </div>
+        </section>
+
+        <!-- ==================== 机务段 ==================== -->
+        <section class="content-grid" id="panel-jiwu">
+            <h2 class="section-title">🚂 机务段</h2>
+            <div class="info-banner">
+                <h3>📌 概述</h3>
+                <p>机务段是铁路运输的<strong>动力核心</strong>，负责机车（包括电力机车、内燃机车、动车组动力车）的运用、整备、检修和管理。机务段是火车司机的"大本营"，也是机车"休息和体检"的地方。</p>
+            </div>
+            <div class="cards-row">
+                <div class="card">
+                    <div class="card-icon">👨‍✈️</div>
+                    <span class="card-badge">核心职能</span>
+                    <h3>机车运用与乘务</h3>
+                    <ul>
+                        <li>机车乘务员（司机）管理</li>
+                        <li>机车交路计划编制</li>
+                        <li>机车整备与上油上水</li>
+                        <li>运行途中应急指挥</li>
+                        <li>LKJ数据换装管理</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔧</div>
+                    <span class="card-badge">检修体系</span>
+                    <h3>机车检修修程</h3>
+                    <ul>
+                        <li>日常整备检查</li>
+                        <li>C1-C6级修程</li>
+                        <li>牵引电机检修</li>
+                        <li>受电弓及高压设备维护</li>
+                        <li>柴油机（内燃）大修</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📍</div>
+                    <span class="card-badge">典型分布</span>
+                    <h3>主要机务段举例</h3>
+                    <ul>
+                        <li>丰台机务段（京局）</li>
+                        <li>上海机务段（上局）</li>
+                        <li>郑州机务段（郑局）</li>
+                        <li>西安机务段（西局）</li>
+                        <li>成都机务段（成局）</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card highlight-box" style="margin-top:8px;">
+                <strong>💡 你知道吗？</strong> "毛泽东号"机车组隶属于丰台机务段，是中国铁路最著名的机车乘务组之一，自1946年命名以来传承至今。
+            </div>
+        </section>
+
+        <!-- ==================== 工务段 ==================== -->
+        <section class="content-grid" id="panel-gongwu">
+            <h2 class="section-title">🛤️ 工务段</h2>
+            <div class="info-banner">
+                <h3>📌 概述</h3>
+                <p>工务段负责铁路<strong>线路、桥隧、路基</strong>等基础设施的养护维修，是铁路安全运行的"地基守护者"。无论是钢轨的每一寸、桥梁的每一座，都在工务人的精心照料之下。</p>
+            </div>
+            <div class="cards-row">
+                <div class="card">
+                    <div class="card-icon">📏</div>
+                    <span class="card-badge">核心职能</span>
+                    <h3>线路维护管理</h3>
+                    <ul>
+                        <li>钢轨探伤与更换</li>
+                        <li>道床清筛与捣固</li>
+                        <li>轨距、水平调整</li>
+                        <li>道岔检修与打磨</li>
+                        <li>无缝线路应力放散</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🌉</div>
+                    <span class="card-badge">桥隧管理</span>
+                    <h3>桥隧建筑物维护</h3>
+                    <ul>
+                        <li>桥梁定期检测评估</li>
+                        <li>隧道渗漏水整治</li>
+                        <li>涵洞清淤与加固</li>
+                        <li>挡墙护坡巡检</li>
+                        <li>防洪防汛专项工作</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📍</div>
+                    <span class="card-badge">典型分布</span>
+                    <h3>主要工务段举例</h3>
+                    <ul>
+                        <li>北京工务段（京局）</li>
+                        <li>上海工务段（上局）</li>
+                        <li>成都工务段（成局）</li>
+                        <li>兰州西工务段（兰局）</li>
+                        <li>昆明工务段（昆局）</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card highlight-box" style="margin-top:8px;">
+                <strong>💡 你知道吗？</strong> 青藏铁路格尔木至拉萨段穿越多年冻土区，工务段需要采用热棒、通风路基等特殊技术来维持路基稳定，是世界铁路养护的奇迹。
+            </div>
+        </section>
+
+        <!-- ==================== 电务段 ==================== -->
+        <section class="content-grid" id="panel-dianwu">
+            <h2 class="section-title">⚡ 电务段</h2>
+            <div class="info-banner">
+                <h3>📌 概述</h3>
+                <p>电务段是铁路的<strong>"神经系统"管理者</strong>，负责信号、通信、道岔转辙设备、轨道电路、闭塞系统等电务设备的维护管理。没有电务段的精准保障，列车将"寸步难行"。</p>
+            </div>
+            <div class="cards-row">
+                <div class="card">
+                    <div class="card-icon">🚦</div>
+                    <span class="card-badge">核心职能</span>
+                    <h3>信号设备维护</h3>
+                    <ul>
+                        <li>信号机检修与调试</li>
+                        <li>轨道电路测试</li>
+                        <li>道岔转辙机维护</li>
+                        <li>CTCS列控系统保障</li>
+                        <li>联锁设备年度测试</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📡</div>
+                    <span class="card-badge">通信系统</span>
+                    <h3>通信网络管理</h3>
+                    <ul>
+                        <li>GSM-R铁路专网维护</li>
+                        <li>调度通信系统保障</li>
+                        <li>光纤传输线路检修</li>
+                        <li>车站广播与监控系统</li>
+                        <li>应急通信设备管理</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📍</div>
+                    <span class="card-badge">典型分布</span>
+                    <h3>主要电务段举例</h3>
+                    <ul>
+                        <li>北京电务段（京局）</li>
+                        <li>上海电务段（上局）</li>
+                        <li>广州电务段（广铁）</li>
+                        <li>成都电务段（成局）</li>
+                        <li>哈尔滨电务段（哈局）</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card highlight-box" style="margin-top:8px;">
+                <strong>💡 你知道吗？</strong> 中国高铁采用的CTCS-3级列控系统，通过GSM-R无线网络实现车地双向通信，使列车能以350km/h的速度安全运行，电务段是这套系统的核心维护力量。
+            </div>
+        </section>
+
+        <!-- ==================== 车间段 ==================== -->
+        <section class="content-grid" id="panel-chejian">
+            <h2 class="section-title">🔧 车间段（综合维修车间/运用车间）</h2>
+            <div class="info-banner">
+                <h3>📌 概述</h3>
+                <p>"车间段"通常指各段下属的<strong>车间级单位</strong>，是基层生产组织单元。在铁路系统中，车辆段、机务段、工务段等均下设若干车间，如检修车间、运用车间、设备车间等，它们是具体执行生产任务的一线团队。</p>
+            </div>
+            <div class="cards-row">
+                <div class="card">
+                    <div class="card-icon">🏭</div>
+                    <span class="card-badge">车间类型</span>
+                    <h3>车辆检修车间</h3>
+                    <ul>
+                        <li>客车检修车间</li>
+                        <li>货车检修车间</li>
+                        <li>轮轴检修车间</li>
+                        <li>设备维修车间</li>
+                        <li>动态检测车间</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">👷</div>
+                    <span class="card-badge">车间类型</span>
+                    <h3>机务运用车间</h3>
+                    <ul>
+                        <li>机车运用车间</li>
+                        <li>机车检修车间</li>
+                        <li>整备车间</li>
+                        <li>救援列车车间</li>
+                        <li>设备辅助车间</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛠️</div>
+                    <span class="card-badge">车间管理</span>
+                    <h3>车间管理要点</h3>
+                    <ul>
+                        <li>生产计划与调度</li>
+                        <li>班组建设与管理</li>
+                        <li>安全风险管控</li>
+                        <li>技术规章执行</li>
+                        <li>职工培训与考核</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card highlight-box" style="margin-top:8px;">
+                <strong>💡 你知道吗？</strong> 铁路系统的"车间"相当于工厂的分厂或大型班组，一个车辆段通常下辖3-8个车间，每个车间又包含若干班组，形成"段—车间—班组"三级管理体系。
+            </div>
+        </section>
+
+        <!-- ==================== 大机段 ==================== -->
+        <section class="content-grid" id="panel-daji">
+            <h2 class="section-title">🏗️ 大机段（大型养路机械运用检修段）</h2>
+            <div class="info-banner">
+                <h3>📌 概述</h3>
+                <p>大机段是专门负责<strong>大型养路机械</strong>运用和检修的单位，拥有捣固车、清筛车、钢轨打磨车、配砟车等大型设备。它们是铁路线路"精细化养护"的主力军，大幅提升了线路维修的效率和精度。</p>
+            </div>
+            <div class="cards-row">
+                <div class="card">
+                    <div class="card-icon">🚜</div>
+                    <span class="card-badge">主要设备</span>
+                    <h3>大型养路机械类型</h3>
+                    <ul>
+                        <li>道床捣固车（DCL-32等）</li>
+                        <li>道床清筛车</li>
+                        <li>钢轨打磨列车</li>
+                        <li>配砟整形车</li>
+                        <li>道岔捣固车</li>
+                        <li>线路稳定车</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <span class="card-badge">核心职能</span>
+                    <h3>大机运用与检修</h3>
+                    <ul>
+                        <li>线路大修机械化施工</li>
+                        <li>道床全断面清筛</li>
+                        <li>钢轨预防性打磨</li>
+                        <li>大机定期检修保养</li>
+                        <li>施工安全与技术管理</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📍</div>
+                    <span class="card-badge">典型分布</span>
+                    <h3>主要大机段举例</h3>
+                    <ul>
+                        <li>北京大机段（京局）</li>
+                        <li>上海大机段（上局）</li>
+                        <li>武汉大机段（武局）</li>
+                        <li>成都大机段（成局）</li>
+                        <li>兰州大机段（兰局）</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card highlight-box" style="margin-top:8px;">
+                <strong>💡 你知道吗？</strong> 一台大型捣固车每小时可完成800-1200米的线路捣固作业，精度控制在±1mm以内，效率是人工捣固的数十倍，是铁路现代化养护的"神器"。
+            </div>
+        </section>
+
+        <!-- ==================== 铁路车站 ==================== -->
+        <section class="content-grid" id="panel-chezhan">
+            <h2 class="section-title">🏫 铁路车站</h2>
+            <div class="info-banner">
+                <h3>📌 概述</h3>
+                <p>铁路车站是铁路运输的<strong>节点枢纽</strong>，承担旅客乘降、货物装卸、列车会让、编组解体等任务。车站按业务性质分为客运站、货运站、编组站和中间站，是铁路与社会的直接"接口"。</p>
+            </div>
+            <div class="cards-row">
+                <div class="card">
+                    <div class="card-icon">🚉</div>
+                    <span class="card-badge">车站分类</span>
+                    <h3>按业务性质分类</h3>
+                    <ul>
+                        <li><strong>客运站</strong>：主要办理旅客乘降</li>
+                        <li><strong>货运站</strong>：主要办理货物装卸</li>
+                        <li><strong>编组站</strong>：货车解体编组</li>
+                        <li><strong>中间站</strong>：会让、越行</li>
+                        <li><strong>区段站</strong>：机车换挂点</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⭐</div>
+                    <span class="card-badge">等级划分</span>
+                    <h3>车站等级</h3>
+                    <ul>
+                        <li>特等站（如北京南、上海虹桥）</li>
+                        <li>一等站（如成都东、武汉）</li>
+                        <li>二等站（多数地级市站）</li>
+                        <li>三等站及以下</li>
+                        <li>乘降所（最小停靠点）</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📍</div>
+                    <span class="card-badge">著名车站</span>
+                    <h3>全国著名铁路车站</h3>
+                    <ul>
+                        <li>北京南站（特等客运站）</li>
+                        <li>上海虹桥站（特等客运站）</li>
+                        <li>郑州北站（特等编组站）</li>
+                        <li>广州南站（特等客运站）</li>
+                        <li>成都东站（一等客运站）</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card highlight-box" style="margin-top:8px;">
+                <strong>💡 你知道吗？</strong> 郑州北站是亚洲最大的铁路编组站之一，日均办理货车超过2万辆，被称为"中国铁路的心脏"。而北京南站则是中国第一座高标准现代化大型客运枢纽站。
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>🚂 <span>中国铁路系统</span> — 车辆段 · 机务段 · 工务段 · 电务段 · 车间段 · 大机段 · 铁路车站</p>
+            <p style="margin-top:4px;font-size:0.8rem;">传承铁路精神 · 致敬每一位铁路人</p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const panels = document.querySelectorAll('.content-grid');
+
+            // 切换面板函数
+            function switchPanel(targetId) {
+                // 隐藏所有面板
+                panels.forEach(panel => panel.classList.remove('active'));
+                // 显示目标面板
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                    // 重新触发动画
+                    targetPanel.style.animation = 'none';
+                    targetPanel.offsetHeight; // 触发回流
+                    targetPanel.style.animation = 'fadeSlideIn 0.45s ease forwards';
+                }
+                // 更新导航标签状态
+                navTabs.forEach(tab => {
+                    tab.classList.remove('active');
+                    if (tab.getAttribute('data-target') === targetId) {
+                        tab.classList.add('active');
+                    }
+                });
+                // 平滑滚动到内容区顶部
+                const mainContent = document.getElementById('mainContent');
+                if (mainContent) {
+                    const rect = mainContent.getBoundingClientRect();
+                    const offset = rect.top + window.pageYOffset - 100;
+                    window.scrollTo({ top: offset, behavior: 'smooth' });
+                }
+            }
+
+            // 为每个导航标签绑定点击事件
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    if (targetId) {
+                        switchPanel(targetId);
+                        // 更新URL哈希（不跳转）
+                        if (history.pushState) {
+                            history.pushState(null, null, '#' + targetId);
+                        }
+                    }
+                });
+            });
+
+            // 页面加载时检查URL哈希
+            function handleHash() {
+                const hash = window.location.hash.replace('#', '');
+                if (hash) {
+                    // 检查是否有对应面板
+                    const matchingPanel = document.getElementById(hash);
+                    if (matchingPanel && matchingPanel.classList.contains('content-grid')) {
+                        switchPanel(hash);
+                        return;
+                    }
+                }
+                // 默认显示第一个
+                const firstTab = document.querySelector('.nav-tab.active');
+                if (!firstTab) {
+                    switchPanel('panel-cheliang');
+                }
+            }
+
+            // 监听哈希变化
+            window.addEventListener('hashchange', handleHash);
+
+            // 初始加载
+            handleHash();
+
+            // 如果没有活动面板，激活第一个
+            const anyActive = document.querySelector('.content-grid.active');
+            if (!anyActive) {
+                switchPanel('panel-cheliang');
+            }
+
+            console.log('🚂 中国铁路系统知识平台已就绪');
+            console.log('  车辆段 | 机务段 | 工务段 | 电务段 | 车间段 | 大机段 | 铁路车站');
+        })();
+    </script>
+</body>
+</html>
+```
